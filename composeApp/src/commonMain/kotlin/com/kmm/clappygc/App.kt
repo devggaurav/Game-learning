@@ -23,6 +23,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import clappygamelearning.composeapp.generated.resources.Res
 import clappygamelearning.composeapp.generated.resources.background
 import clappygamelearning.composeapp.generated.resources.compose_multiplatform
+import com.kmm.clappygc.util.ChewyFontFamily
 
 @Composable
 @Preview
@@ -45,13 +46,15 @@ fun App() {
         Text(
             text = "BEST : 0",
             fontWeight = FontWeight.Bold,
-            fontSize = MaterialTheme.typography.displaySmall.fontSize
+            fontSize = MaterialTheme.typography.displaySmall.fontSize,
+            fontFamily = ChewyFontFamily()
         )
 
         Text(
             text = "0",
             fontWeight = FontWeight.Bold,
-            fontSize = MaterialTheme.typography.displaySmall.fontSize
+            fontSize = MaterialTheme.typography.displaySmall.fontSize,
+            fontFamily = ChewyFontFamily()
         )
 
 
