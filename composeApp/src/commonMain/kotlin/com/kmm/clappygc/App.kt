@@ -1,7 +1,9 @@
 package com.kmm.clappygc
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
@@ -24,6 +29,7 @@ import clappygamelearning.composeapp.generated.resources.Res
 import clappygamelearning.composeapp.generated.resources.background
 import clappygamelearning.composeapp.generated.resources.compose_multiplatform
 import com.kmm.clappygc.domain.Game
+import com.kmm.clappygc.domain.GameStatus
 import com.kmm.clappygc.util.ChewyFontFamily
 
 @Composable
@@ -34,10 +40,13 @@ fun App() {
 
         var screenWidth by remember { mutableStateOf(0) }
         var screenHeight by remember { mutableStateOf(0) }
-        var game = remember(screenWidth, screenHeight) {
+        val game = remember(screenWidth, screenHeight) {
             Game(screenWidth, screenHeight)
         }
 
+        LaunchedEffect(Unit){
+            game.start()
+        }
 
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
@@ -47,6 +56,30 @@ fun App() {
                 contentScale = ContentScale.Crop
             )
         }
+
+        Canvas(
+            modifier = Modifier.fillMaxSize().onGloballyPositioned {
+                val size = it.size
+                if (screenWidth != size.width || screenHeight != size.height) {
+                    screenWidth = size.width
+                    screenHeight = size.height
+                }
+            }.clickable {
+                if (game.status == GameStatus.Started) {
+                    game.jump()
+                }
+            }
+        ) {
+            drawCircle(
+                color = Color.Blue,
+                radius = game.bee.radius,
+                center = Offset(
+                    x = game.bee.x,
+                    y = game.bee.y
+                )
+            )
+        }
+
 
         Row(
             modifier = Modifier.fillMaxWidth().padding(all = 48.dp),
