@@ -40,12 +40,21 @@ fun App() {
 
         var screenWidth by remember { mutableStateOf(0) }
         var screenHeight by remember { mutableStateOf(0) }
-        val game = remember(screenWidth, screenHeight) {
-            Game(screenWidth, screenHeight)
+        var game = remember {
+            Game()
         }
 
-        LaunchedEffect(Unit){
+        LaunchedEffect(Unit) {
             game.start()
+        }
+
+        LaunchedEffect(game.status) {
+            while (game.status == GameStatus.Started) {
+                withFrameMillis {
+                    game.updateGameProgress()
+                }
+            }
+
         }
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -63,6 +72,10 @@ fun App() {
                 if (screenWidth != size.width || screenHeight != size.height) {
                     screenWidth = size.width
                     screenHeight = size.height
+                    game = game.copy(
+                        screenWidth = screenWidth,
+                        screenHeight = screenHeight
+                    )
                 }
             }.clickable {
                 if (game.status == GameStatus.Started) {

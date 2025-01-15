@@ -11,9 +11,9 @@ import androidx.compose.runtime.setValue
 //
 
 
-class Game(
-    val screenWidth: Int,
-    val screenHeight: Int,
+data class Game(
+    val screenWidth: Int = 0,
+    val screenHeight: Int = 0,
     val gravity: Float = 0.7f,
     val beeJumpImpulse: Float = -12f,
     val beeMaxVelocity: Float = 25f
@@ -27,10 +27,11 @@ class Game(
 
     var bee by mutableStateOf(
         Bee(
-            x = (screenWidth / 2).toFloat(),
+            x = (screenWidth / 4).toFloat(),
             y = (screenHeight / 2).toFloat(),
         )
     )
+        private set
 
 
     fun start() {
