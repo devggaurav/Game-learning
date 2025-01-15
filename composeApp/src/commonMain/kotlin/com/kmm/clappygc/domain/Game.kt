@@ -48,8 +48,19 @@ data class Game(
 
 
     fun updateGameProgress() {
+        if (bee.y < 0) {
+            stopTheBee()
+            return
+        } else if (bee.y > screenHeight) {
+            gameOver()
+            return
+        }
         beeVelocity = (beeVelocity + gravity).coerceIn(-beeMaxVelocity, beeMaxVelocity)
         bee = bee.copy(y = bee.y + beeVelocity)
+    }
+
+    fun stopTheBee() {
+        beeVelocity = 0f
     }
 
 

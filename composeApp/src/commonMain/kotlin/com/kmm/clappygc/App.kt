@@ -3,6 +3,7 @@ package com.kmm.clappygc
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,8 +41,8 @@ fun App() {
 
         var screenWidth by remember { mutableStateOf(0) }
         var screenHeight by remember { mutableStateOf(0) }
-        var game = remember {
-            Game()
+        var game by remember {
+            mutableStateOf(Game())
         }
 
         LaunchedEffect(Unit) {
@@ -115,6 +116,29 @@ fun App() {
 
 
         }
+
+        if (game.status == GameStatus.Over){
+
+            Column(
+                modifier = Modifier.fillMaxSize().background(
+                    color = Color.Black.copy(alpha = 0.5f)
+                ),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+
+                Text(
+                    text = "Game Over!",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = MaterialTheme.typography.displaySmall.fontSize,
+                    fontFamily = ChewyFontFamily()
+                )
+
+            }
+
+        }
+
     }
 
 }
