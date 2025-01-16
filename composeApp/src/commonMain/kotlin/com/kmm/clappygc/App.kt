@@ -1,6 +1,7 @@
 package com.kmm.clappygc
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
@@ -71,7 +73,12 @@ fun App() {
 
         val currentFrame by spriteState.currentFrame.collectAsState()
         val sheetImage = spriteSpec.imageBitmap
-
+        val animatedAngle by animateFloatAsState(
+            targetValue = when {
+                game.beeVelocity > game.beeMaxVelocity / 1.1 -> 30f
+                else -> 0f
+            }
+        )
 
 
 
@@ -85,6 +92,9 @@ fun App() {
                 withFrameMillis {
                     game.updateGameProgress()
                 }
+            }
+            if (game.status == GameStatus.Over) {
+                spriteState.stop()
             }
 
         }
@@ -115,25 +125,34 @@ fun App() {
                 }
             }
         ) {
-           /* drawCircle(
-                color = Color.Blue,
-                radius = game.bee.radius,
-                center = Offset(
+            /* drawCircle(
+                 color = Color.Blue,
+                 radius = game.bee.radius,
+                 center = Offset(
+                     x = game.bee.x,
+                     y = game.bee.y
+                 )
+             )*/
+
+            rotate(
+                degrees = animatedAngle,
+                pivot = Offset(
                     x = game.bee.x,
                     y = game.bee.y
-                )
-            )*/
+                ),
+            ) {
 
-            drawSpriteView(
-                spriteState = spriteState,
-                spriteSpec = spriteSpec,
-                currentFrame = currentFrame,
-                image = sheetImage,
-                offset = IntOffset(
-                    x = game.bee.x.toInt(),
-                    y = game.bee.y.toInt()
+                drawSpriteView(
+                    spriteState = spriteState,
+                    spriteSpec = spriteSpec,
+                    currentFrame = currentFrame,
+                    image = sheetImage,
+                    offset = IntOffset(
+                        x = game.bee.x.toInt(),
+                        y = game.bee.y.toInt()
+                    )
                 )
-            )
+            }
 
 
         }
@@ -161,7 +180,7 @@ fun App() {
 
         }
 
-        if (game.status == GameStatus.Over){
+        if (game.status == GameStatus.Over) {
 
             Column(
                 modifier = Modifier.fillMaxSize().background(
@@ -169,7 +188,7 @@ fun App() {
                 ),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
 
                 Text(
                     text = "Game Over!",
