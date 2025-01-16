@@ -10,13 +10,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -91,7 +96,6 @@ fun App() {
                 spriteState.cleanup()
             }
         }
-
 
 
         /*LaunchedEffect(Unit) {
@@ -211,7 +215,18 @@ fun App() {
                         spriteState.start()
                     }
                 ) {
-                    Text("Start Game")
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    Text(
+                        "Start Game",
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        fontFamily = ChewyFontFamily()
+                    )
                 }
 
 
