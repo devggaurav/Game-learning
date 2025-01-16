@@ -12,7 +12,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -35,6 +39,7 @@ import clappygamelearning.composeapp.generated.resources.bee_sprite
 import clappygamelearning.composeapp.generated.resources.compose_multiplatform
 import com.kmm.clappygc.domain.Game
 import com.kmm.clappygc.domain.GameStatus
+import com.kmm.clappygc.ui.orange
 import com.kmm.clappygc.util.ChewyFontFamily
 import com.stevdza_san.sprite.component.drawSpriteView
 import com.stevdza_san.sprite.domain.SpriteSheet
@@ -80,12 +85,19 @@ fun App() {
             }
         )
 
+        DisposableEffect(Unit) {
+            onDispose {
+                spriteState.stop()
+                spriteState.cleanup()
+            }
+        }
 
 
-        LaunchedEffect(Unit) {
+
+        /*LaunchedEffect(Unit) {
             game.start()
             spriteState.start()
-        }
+        }*/
 
         LaunchedEffect(game.status) {
             while (game.status == GameStatus.Started) {
@@ -179,6 +191,36 @@ fun App() {
 
 
         }
+
+        if (game.status == GameStatus.Idle) {
+
+            Box(
+                modifier = Modifier.fillMaxSize().background(
+                    color = Color.Black.copy(alpha = 0.5f)
+                ),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    modifier = Modifier.height(54.dp),
+                    shape = RoundedCornerShape(size = 20.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = orange
+                    ),
+                    onClick = {
+                        game.start()
+                        spriteState.start()
+                    }
+                ) {
+                    Text("Start Game")
+                }
+
+
+            }
+
+
+        }
+
+
 
         if (game.status == GameStatus.Over) {
 
