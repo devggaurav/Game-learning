@@ -14,7 +14,8 @@ import androidx.compose.runtime.setValue
 data class Game(
     val screenWidth: Int = 0,
     val screenHeight: Int = 0,
-    val gravity: Float = 0.7f,
+    val gravity: Float = 0.8f,
+    val beeRadius: Float = 30f,
     val beeJumpImpulse: Float = -12f,
     val beeMaxVelocity: Float = 25f
 ) {
@@ -29,6 +30,7 @@ data class Game(
         Bee(
             x = (screenWidth / 4).toFloat(),
             y = (screenHeight / 2).toFloat(),
+            radius = beeRadius
         )
     )
         private set

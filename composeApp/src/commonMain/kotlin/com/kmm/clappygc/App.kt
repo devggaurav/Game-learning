@@ -137,8 +137,8 @@ fun App() {
             rotate(
                 degrees = animatedAngle,
                 pivot = Offset(
-                    x = game.bee.x,
-                    y = game.bee.y
+                    x = game.bee.x - game.beeRadius,
+                    y = game.bee.y - game.beeRadius
                 ),
             ) {
 
@@ -148,8 +148,8 @@ fun App() {
                     currentFrame = currentFrame,
                     image = sheetImage,
                     offset = IntOffset(
-                        x = game.bee.x.toInt(),
-                        y = game.bee.y.toInt()
+                        x = (game.bee.x.toInt() - game.beeRadius).toInt(),
+                        y = (game.bee.y.toInt() - game.beeRadius).toInt()
                     )
                 )
             }
