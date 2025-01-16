@@ -22,16 +22,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import clappygamelearning.composeapp.generated.resources.Res
 import clappygamelearning.composeapp.generated.resources.background
+import clappygamelearning.composeapp.generated.resources.bee_sprite
 import clappygamelearning.composeapp.generated.resources.compose_multiplatform
 import com.kmm.clappygc.domain.Game
 import com.kmm.clappygc.domain.GameStatus
 import com.kmm.clappygc.util.ChewyFontFamily
+import com.stevdza_san.sprite.component.drawSpriteView
+import com.stevdza_san.sprite.domain.SpriteSheet
+import com.stevdza_san.sprite.domain.SpriteSpec
+import com.stevdza_san.sprite.domain.rememberSpriteState
+
+const val BEE_FRAME_SIZE = 80
 
 @Composable
 @Preview
@@ -45,8 +53,31 @@ fun App() {
             mutableStateOf(Game())
         }
 
+        val spriteState = rememberSpriteState(
+            totalFrames = 9,
+            framesPerRow = 3
+        )
+
+        val spriteSpec = remember {
+            SpriteSpec(
+                screenWidth = screenWidth.toFloat(),
+                default = SpriteSheet(
+                    frameWidth = BEE_FRAME_SIZE,
+                    frameHeight = BEE_FRAME_SIZE,
+                    image = Res.drawable.bee_sprite
+                )
+            )
+        }
+
+        val currentFrame by spriteState.currentFrame.collectAsState()
+        val sheetImage = spriteSpec.imageBitmap
+
+
+
+
         LaunchedEffect(Unit) {
             game.start()
+            spriteState.start()
         }
 
         LaunchedEffect(game.status) {
@@ -84,14 +115,27 @@ fun App() {
                 }
             }
         ) {
-            drawCircle(
+           /* drawCircle(
                 color = Color.Blue,
                 radius = game.bee.radius,
                 center = Offset(
                     x = game.bee.x,
                     y = game.bee.y
                 )
+            )*/
+
+            drawSpriteView(
+                spriteState = spriteState,
+                spriteSpec = spriteSpec,
+                currentFrame = currentFrame,
+                image = sheetImage,
+                offset = IntOffset(
+                    x = game.bee.x.toInt(),
+                    y = game.bee.y.toInt()
+                )
             )
+
+
         }
 
 
