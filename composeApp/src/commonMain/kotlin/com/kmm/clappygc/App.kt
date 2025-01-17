@@ -35,6 +35,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.layout.ContentScale
@@ -61,6 +62,7 @@ import com.stevdza_san.sprite.domain.SpriteSpec
 import com.stevdza_san.sprite.domain.rememberSpriteState
 
 const val BEE_FRAME_SIZE = 80
+const val PIPE_CAP_HEIGHT = 50F
 
 @Composable
 @Preview
@@ -225,6 +227,30 @@ fun App() {
                         y = (game.bee.y.toInt() - game.beeRadius).toInt()
                     )
                 )
+            }
+
+
+            game.pipePairs.forEach { pipePair ->
+
+                drawRect(
+                    color = Color.Green,
+                    topLeft = Offset(
+                        x = pipePair.x - game.pipeWidth / 2,
+                        y = 0f
+                    ),
+                    size = Size(game.pipeWidth, pipePair.topHeight)
+                )
+
+                drawRect(
+                    color = Color.Green,
+                    topLeft = Offset(
+                        x = pipePair.x - game.pipeWidth / 2,
+                        y = pipePair.y + game.pipeGapSize / 2
+                    ),
+                    size = Size(game.pipeWidth, pipePair.bottomHeight)
+                )
+
+
             }
 
 
