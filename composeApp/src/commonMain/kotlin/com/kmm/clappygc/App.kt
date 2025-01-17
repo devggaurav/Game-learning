@@ -1,7 +1,12 @@
 package com.kmm.clappygc
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -43,6 +50,7 @@ import clappygamelearning.composeapp.generated.resources.Res
 import clappygamelearning.composeapp.generated.resources.background
 import clappygamelearning.composeapp.generated.resources.bee_sprite
 import clappygamelearning.composeapp.generated.resources.compose_multiplatform
+import clappygamelearning.composeapp.generated.resources.moving_background
 import com.kmm.clappygc.domain.Game
 import com.kmm.clappygc.domain.GameStatus
 import com.kmm.clappygc.ui.orange
@@ -116,12 +124,60 @@ fun App() {
 
         }
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        val backgroundOffsetX = remember { Animatable(0f) }
+        var imageWidth by remember { mutableStateOf(0) }
+
+        LaunchedEffect(game.status) {
+            while (game.status == GameStatus.Started) {
+                backgroundOffsetX.animateTo(
+                    targetValue = -imageWidth.toFloat(),
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(
+                            durationMillis = 4000,
+                            easing = LinearEasing
+                        ),
+                        repeatMode = RepeatMode.Restart
+                    )
+                )
+            }
+        }
+
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
             Image(
                 painter = painterResource(Res.drawable.background),
                 modifier = Modifier.fillMaxSize(),
                 contentDescription = "Background",
                 contentScale = ContentScale.Crop
+            )
+
+            Image(
+                painter = painterResource(Res.drawable.moving_background),
+                modifier = Modifier.fillMaxSize().onSizeChanged {
+                    imageWidth = it.width
+                }.offset {
+                    IntOffset(
+                        x = backgroundOffsetX.value.toInt(),
+                        y = 0
+                    )
+                },
+                contentDescription = "Background image",
+                contentScale = ContentScale.FillHeight
+            )
+
+            Image(
+                painter = painterResource(Res.drawable.moving_background),
+                modifier = Modifier.fillMaxSize().offset {
+                    IntOffset(
+                        x = backgroundOffsetX.value.toInt() + imageWidth,
+                        y = 0
+                    )
+                },
+                contentDescription = "Background image",
+                contentScale = ContentScale.FillHeight
             )
         }
 
@@ -256,6 +312,13 @@ fun App() {
                     fontFamily = ChewyFontFamily()
                 )
 
+                Text(
+                    text = "Score: 0",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                    fontFamily = ChewyFontFamily()
+                )
 
 
                 Spacer(modifier = Modifier.height(24.dp))
