@@ -4,6 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.russhwolf.settings.ObservableSettings
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.random.Random
 
 
@@ -11,7 +14,7 @@ import kotlin.random.Random
 // Created by Code For Android on 14/01/25.
 // Copyright (c) 2025 CFA. All rights reserved.
 //
-
+const val SCORE_KEY = "score"
 
 data class Game(
     val screenWidth: Int = 0,
@@ -24,7 +27,11 @@ data class Game(
     val pipeWidth: Float = 150f,
     val pipeVelocity: Float = 5f,
     val pipeGapSize: Float = 250f,
-) {
+) : KoinComponent {
+
+    private val settings: ObservableSettings by inject()
+
+
     var status by mutableStateOf(GameStatus.Idle)
         private set
 
@@ -44,6 +51,26 @@ data class Game(
 
     var pipePairs = mutableStateListOf<PipePair>()
 
+    var currentScore by mutableStateOf(0)
+        private set
+
+    var highScore by mutableStateOf(0)
+        private set
+
+    init {
+        highScore = settings.getInt(
+            key = SCORE_KEY,
+            defaultValue = 0
+        )
+
+        settings.addIntListener(
+            key = SCORE_KEY,
+            defaultValue = 0
+        ) {
+            highScore = it
+        }
+
+    }
 
     fun start() {
         status = GameStatus.Started
@@ -51,6 +78,14 @@ data class Game(
 
     fun gameOver() {
         status = GameStatus.Over
+        saveScore()
+    }
+
+    private fun saveScore() {
+        if (highScore < currentScore) {
+            settings.putInt(SCORE_KEY, currentScore)
+            highScore = currentScore
+        }
     }
 
     fun jump() {
@@ -61,6 +96,11 @@ data class Game(
         resetBeePosition()
         removePipes()
         start()
+        resetScore()
+    }
+
+    private fun resetScore(){
+        currentScore = 0
     }
 
 
@@ -79,6 +119,12 @@ data class Game(
                 gameOver()
                 return
             }
+
+            if (!pipePair.scored && bee.x > pipePair.x + pipeWidth / 2) {
+                pipePair.scored = true
+                currentScore += 1
+            }
+
         }
 
 
