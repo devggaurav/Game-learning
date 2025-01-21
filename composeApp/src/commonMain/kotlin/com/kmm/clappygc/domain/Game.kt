@@ -73,6 +73,15 @@ data class Game(
 
 
     fun updateGameProgress() {
+
+        pipePairs.forEach { pipePair ->
+            if (isCollision(pipePair)) {
+                gameOver()
+                return
+            }
+        }
+
+
         if (bee.y < 0) {
             stopTheBee()
             return
@@ -108,6 +117,31 @@ data class Game(
 
     fun stopTheBee() {
         beeVelocity = 0f
+    }
+
+
+    private fun isCollision(pipePair: PipePair): Boolean {
+        // check horizontal collision
+        val beeRightEdge = bee.x + bee.radius
+        val beeLeftEdge = bee.x - bee.radius
+
+        val pipeLeftEdge = pipePair.x - pipeWidth / 2
+        val pipeRightEdge = pipePair.x + pipeWidth / 2
+
+        val horizontalCollision = beeRightEdge > pipeLeftEdge && beeLeftEdge < pipeRightEdge
+
+        // check vertical collision
+        val beeTopEdge = bee.y - bee.radius
+        val beeBottomEdge = bee.y + bee.radius
+
+
+        val gapTopEdge = pipePair.y - pipeGapSize / 2
+        val gapBottomEdge = pipePair.y + pipeGapSize / 2
+
+        val beeInGap = beeTopEdge > gapTopEdge && beeBottomEdge < gapBottomEdge
+
+        return horizontalCollision && !beeInGap
+
     }
 
     private fun removePipes() {
