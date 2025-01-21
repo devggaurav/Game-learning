@@ -30,6 +30,7 @@ data class Game(
 ) : KoinComponent {
 
     private val settings: ObservableSettings by inject()
+    private val audioPlayer: AudioPlayer by inject()
 
 
     var status by mutableStateOf(GameStatus.Idle)
@@ -57,6 +58,9 @@ data class Game(
     var highScore by mutableStateOf(0)
         private set
 
+
+    private var isFallingSoundPlayed = false
+
     init {
         highScore = settings.getInt(
             key = SCORE_KEY,
@@ -74,11 +78,14 @@ data class Game(
 
     fun start() {
         status = GameStatus.Started
+        audioPlayer.playGameSoundInLoop()
     }
 
     fun gameOver() {
         status = GameStatus.Over
+        audioPlayer.stopGameSound()
         saveScore()
+        isFallingSoundPlayed = false
     }
 
     private fun saveScore() {
@@ -90,16 +97,19 @@ data class Game(
 
     fun jump() {
         beeVelocity = beeJumpImpulse
+        audioPlayer.playJumpSound()
+        isFallingSoundPlayed = false
     }
 
     fun restartGame() {
         resetBeePosition()
         removePipes()
-        start()
         resetScore()
+        start()
+        isFallingSoundPlayed = false
     }
 
-    private fun resetScore(){
+    private fun resetScore() {
         currentScore = 0
     }
 
@@ -137,6 +147,13 @@ data class Game(
         }
         beeVelocity = (beeVelocity + gravity).coerceIn(-beeMaxVelocity, beeMaxVelocity)
         bee = bee.copy(y = bee.y + beeVelocity)
+
+        if (beeVelocity > (beeVelocity / 1.1)){
+            if (!isFallingSoundPlayed){
+                audioPlayer.playFallingSound()
+                isFallingSoundPlayed = true
+            }
+        }
 
         spawnPipes()
     }
@@ -192,6 +209,10 @@ data class Game(
 
     private fun removePipes() {
         pipePairs.clear()
+    }
+
+    fun cleanup() {
+        audioPlayer.release()
     }
 
 
