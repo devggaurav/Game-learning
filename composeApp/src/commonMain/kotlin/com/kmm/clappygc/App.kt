@@ -63,6 +63,7 @@ import com.stevdza_san.sprite.component.drawSpriteView
 import com.stevdza_san.sprite.domain.SpriteSheet
 import com.stevdza_san.sprite.domain.SpriteSpec
 import com.stevdza_san.sprite.domain.rememberSpriteState
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.imageResource
 
 const val BEE_FRAME_SIZE = 80
@@ -74,6 +75,7 @@ fun App() {
 
     MaterialTheme {
 
+        val scope = rememberCoroutineScope()
         var screenWidth by remember { mutableStateOf(0) }
         var screenHeight by remember { mutableStateOf(0) }
         var game by remember {
@@ -238,23 +240,23 @@ fun App() {
 
             game.pipePairs.forEach { pipePair ->
 
-               /* drawRect(
-                    color = Color.Green,
-                    topLeft = Offset(
-                        x = pipePair.x - game.pipeWidth / 2,
-                        y = 0f
-                    ),
-                    size = Size(game.pipeWidth, pipePair.topHeight)
-                )
+                /* drawRect(
+                     color = Color.Green,
+                     topLeft = Offset(
+                         x = pipePair.x - game.pipeWidth / 2,
+                         y = 0f
+                     ),
+                     size = Size(game.pipeWidth, pipePair.topHeight)
+                 )
 
-                drawRect(
-                    color = Color.Green,
-                    topLeft = Offset(
-                        x = pipePair.x - game.pipeWidth / 2,
-                        y = pipePair.y + game.pipeGapSize / 2
-                    ),
-                    size = Size(game.pipeWidth, pipePair.bottomHeight)
-                )*/
+                 drawRect(
+                     color = Color.Green,
+                     topLeft = Offset(
+                         x = pipePair.x - game.pipeWidth / 2,
+                         y = pipePair.y + game.pipeGapSize / 2
+                     ),
+                     size = Size(game.pipeWidth, pipePair.bottomHeight)
+                 )*/
 
                 drawImage(
                     image = pipeImage,
@@ -407,6 +409,9 @@ fun App() {
                     onClick = {
                         game.restartGame()
                         spriteState.start()
+                        scope.launch {
+                            backgroundOffsetX.snapTo(0f)
+                        }
                     }
                 ) {
                     Icon(
