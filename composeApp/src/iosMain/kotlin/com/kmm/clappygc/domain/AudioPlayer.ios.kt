@@ -1,5 +1,6 @@
 package com.kmm.clappygc.domain
 
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class AudioPlayer {
     actual fun playGameOverSound() {
     }
