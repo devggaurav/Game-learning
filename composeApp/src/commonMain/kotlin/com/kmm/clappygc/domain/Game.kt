@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.kmm.clappygc.util.Platform
 import com.russhwolf.settings.ObservableSettings
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -17,6 +18,7 @@ import kotlin.random.Random
 const val SCORE_KEY = "score"
 
 data class Game(
+    val platform: Platform,
     val screenWidth: Int = 0,
     val screenHeight: Int = 0,
     val gravity: Float = 0.8f,
