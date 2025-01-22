@@ -24,21 +24,36 @@ actual class AudioPlayer {
     }
 
     actual fun playGameOverSound() {
+        stopFallingSound()
+        playSound(soundName = "game_over")
     }
 
     actual fun playJumpSound() {
+        stopFallingSound()
+        playSound(soundName = "jump")
     }
 
     actual fun playFallingSound() {
+        fallingSoundPlayer = playSound(soundName = "falling")
     }
 
     actual fun stopFallingSound() {
+        fallingSoundPlayer?.stop()
+        fallingSoundPlayer = null
     }
 
     actual fun playGameSoundInLoop() {
+        val url = getSoundURL("game_sound")
+        val player = url?.let { AVAudioPlayer(it, null) }
+        player?.numberOfLoops = -1
+        player?.prepareToPlay()
+        player?.play()
+        audioPlayers["game_sound"] = player
     }
 
     actual fun stopGameSound() {
+        audioPlayers["game_sound"]?.stop()
+        audioPlayers["game_sound"] = null
     }
 
     actual fun release() {
