@@ -52,11 +52,17 @@ actual class AudioPlayer {
     }
 
     actual fun stopGameSound() {
+        playGameOverSound()
         audioPlayers["game_sound"]?.stop()
         audioPlayers["game_sound"] = null
     }
 
     actual fun release() {
+        audioPlayers.values.forEach { it?.stop() }
+        audioPlayers.clear()
+        fallingSoundPlayer?.stop()
+        fallingSoundPlayer = null
+
     }
 
     private fun playSound(soundName: String): AVAudioPlayer? {
