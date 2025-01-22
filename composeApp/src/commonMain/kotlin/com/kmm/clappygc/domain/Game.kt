@@ -24,11 +24,11 @@ data class Game(
     val gravity: Float = 0.8f,
     val beeRadius: Float = 30f,
     val beeJumpImpulse: Float = -12f,
-    val beeMaxVelocity: Float = 25f,
+    val beeMaxVelocity: Float = if (platform == Platform.Android) 25f else 10f,
 
     val pipeWidth: Float = 150f,
-    val pipeVelocity: Float = 5f,
-    val pipeGapSize: Float = 250f,
+    val pipeVelocity: Float = if (platform == Platform.Android) 5f else 2.5f,
+    val pipeGapSize: Float = if (platform == Platform.Android) 250f else 300f,
 ) : KoinComponent {
 
     private val settings: ObservableSettings by inject()
