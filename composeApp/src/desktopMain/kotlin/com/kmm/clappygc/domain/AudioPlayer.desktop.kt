@@ -4,6 +4,8 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.nio.file.Files
 import java.nio.file.Paths
+import javax.sound.sampled.AudioSystem
+import javax.sound.sampled.DataLine
 import javax.sound.sampled.SourceDataLine
 import kotlin.concurrent.thread
 
@@ -46,9 +48,29 @@ actual class AudioPlayer {
         }
     }
 
-    private fun playSound(fileName: String){
+    private fun playSound(fileName: String, loop : Boolean = false){
         thread {
             try {
+                val audioData = audioCache[fileName] ?: loadAudioFile(fileName).also {
+                    audioCache[fileName] = it
+                }
+
+                val inputStream = AudioSystem.getAudioInputStream(audioData.inputStream())
+                val format = inputStream.format
+                val info = DataLine.Info(SourceDataLine::class.java, format)
+                val line = AudioSystem.getLine(info) as SourceDataLine
+
+                line.open(format)
+                line.start()
+
+                synchronized(playingLines){
+                    playingLines[fileName] = line
+                }
+
+                val buffer = ByteArray(4096)
+                var bytesRead = 0
+                var shouldContinue = true
+
 
 
             }catch (ex :Exception){
