@@ -38,8 +38,8 @@ actual class AudioPlayer {
 
     }
 
-    private  fun stopSound(fileName: String){
-        synchronized(playingLines){
+    private fun stopSound(fileName: String) {
+        synchronized(playingLines) {
             playingLines[fileName]?.let { line ->
                 line.stop()
                 line.close()
@@ -48,7 +48,7 @@ actual class AudioPlayer {
         }
     }
 
-    private fun playSound(fileName: String, loop : Boolean = false){
+    private fun playSound(fileName: String, loop: Boolean = false) {
         thread {
             try {
                 val audioData = audioCache[fileName] ?: loadAudioFile(fileName).also {
@@ -63,7 +63,7 @@ actual class AudioPlayer {
                 line.open(format)
                 line.start()
 
-                synchronized(playingLines){
+                synchronized(playingLines) {
                     playingLines[fileName] = line
                 }
 
@@ -71,10 +71,44 @@ actual class AudioPlayer {
                 var bytesRead = 0
                 var shouldContinue = true
 
+                if (loop) {
+                    while (shouldContinue) {
+                        inputStream.reset()
+                        while (shouldContinue && inputStream.read(buffer)
+                                .also { bytesRead = it } != -1
+                        ) {
+
+                            synchronized(playingLines) {
+                                shouldContinue = playingLines.containsKey(fileName)
+                            }
+                            if (shouldContinue) {
+                                line.write(buffer, 0, bytesRead)
+                            }
+                        }
+                    }
+                } else {
+                    while (shouldContinue && inputStream.read(buffer)
+                            .also { bytesRead = it } != -1
+                    ) {
+                        synchronized(playingLines) {
+                            shouldContinue = playingLines.containsKey(fileName)
+                        }
+                        if (shouldContinue) {
+                            line.write(buffer, 0, bytesRead)
+                        }
+                    }
+
+                    line.drain()
+                    line.close()
+                    synchronized(playingLines) {
+                        playingLines.remove(fileName)
+                    }
+
+                }
 
 
-            }catch (ex :Exception){
-
+            } catch (ex: Exception) {
+                println("Error playing the file $fileName  ${ex.message}")
             }
         }
 
@@ -82,7 +116,7 @@ actual class AudioPlayer {
     }
 
 
-    private fun stopAllSound(){
+    private fun stopAllSound() {
         synchronized(playingLines) {
             playingLines.values.forEach { line ->
                 line.stop()
