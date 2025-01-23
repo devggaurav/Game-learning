@@ -5,6 +5,7 @@ import java.io.FileNotFoundException
 import java.nio.file.Files
 import java.nio.file.Paths
 import javax.sound.sampled.SourceDataLine
+import kotlin.concurrent.thread
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class AudioPlayer {
@@ -42,6 +43,30 @@ actual class AudioPlayer {
                 line.close()
                 playingLines.remove(fileName)
             }
+        }
+    }
+
+    private fun playSound(fileName: String){
+        thread {
+            try {
+
+
+            }catch (ex :Exception){
+
+            }
+        }
+
+
+    }
+
+
+    private fun stopAllSound(){
+        synchronized(playingLines) {
+            playingLines.values.forEach { line ->
+                line.stop()
+                line.close()
+            }
+            playingLines.clear()
         }
     }
 
