@@ -60,6 +60,7 @@ import com.kmm.clappygc.domain.Game
 import com.kmm.clappygc.domain.GameStatus
 import com.kmm.clappygc.ui.orange
 import com.kmm.clappygc.util.ChewyFontFamily
+import com.kmm.clappygc.util.Platform
 import com.kmm.clappygc.util.getPlatform
 import com.stevdza_san.sprite.component.drawSpriteView
 import com.stevdza_san.sprite.domain.SpriteSheet
@@ -146,7 +147,12 @@ fun App() {
                     targetValue = -imageWidth.toFloat(),
                     animationSpec = infiniteRepeatable(
                         animation = tween(
-                            durationMillis = 4000,
+                            durationMillis = when(platform){
+                                Platform.Android -> 4000
+                                Platform.IOS -> 4000
+                                Platform.Desktop -> 5000
+                                Platform.Web -> 8000
+                            },
                             easing = LinearEasing
                         ),
                         repeatMode = RepeatMode.Restart
