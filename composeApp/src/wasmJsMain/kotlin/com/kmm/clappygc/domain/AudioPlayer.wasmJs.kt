@@ -9,24 +9,37 @@ actual class AudioPlayer {
 
 
     actual fun playGameOverSound() {
+        stopFallingSound()
+        playSound(filename = "game_over.wav")
     }
 
     actual fun playJumpSound() {
+        stopFallingSound()
+        playSound(filename = "jump.wav")
     }
 
     actual fun playFallingSound() {
+        playSound(filename = "falling.wav")
+
     }
 
     actual fun stopFallingSound() {
+        stopSound(filename = "falling.wav")
     }
 
     actual fun playGameSoundInLoop() {
+        stopAllSounds()
+        playSound(filename = "game_sound.wav", loop = true)
     }
 
     actual fun stopGameSound() {
+        playGameOverSound()
+        stopSound(filename = "game_sound.wav")
     }
 
     actual fun release() {
+        stopAllSounds()
+        audioElement.clear()
     }
 
     private fun stopSound(filename: String) {
