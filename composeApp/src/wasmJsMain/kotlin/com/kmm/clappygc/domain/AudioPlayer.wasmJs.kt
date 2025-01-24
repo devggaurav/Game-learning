@@ -29,6 +29,21 @@ actual class AudioPlayer {
     actual fun release() {
     }
 
+    private fun stopSound(filename: String) {
+        audioElement[filename]?.let { audio ->
+            audio.pause()
+            audio.currentTime = 0.0
+        }
+    }
+
+    private fun stopAllSounds() {
+        audioElement.values.forEach { audio ->
+            audio.pause()
+            audio.currentTime = 0.0
+        }
+    }
+
+
     private fun playSound(filename: String, loop: Boolean = false) {
         val audio = audioElement[filename] ?: createAudioElement(filename).also {
             audioElement[filename] = it
