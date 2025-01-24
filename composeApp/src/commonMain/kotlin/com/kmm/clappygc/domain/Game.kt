@@ -21,7 +21,7 @@ data class Game(
     val platform: Platform,
     val screenWidth: Int = 0,
     val screenHeight: Int = 0,
-    val gravity: Float = 0.8f,
+    val gravity: Float = 0.7f,
     val beeRadius: Float = 30f,
     val beeJumpImpulse: Float = -12f,
     val beeMaxVelocity: Float = if (platform == Platform.Android) 25f else 10f,
