@@ -138,12 +138,20 @@ actual class AudioPlayer {
 
 
     private fun loadAudioFile(fileName: String): ByteArray {
+
+        // Use the class loader to access resources packaged in the JAR
+        val resourceStream = this::class.java.classLoader?.getResourceAsStream("composeResources/clappygamelearning.composeapp.generated.resources/files/$fileName")
+            ?: throw FileNotFoundException("Resource not found: files/$fileName")
+        return resourceStream.use { it.readBytes() }
+
+        //For development
+      /* // val resourcePath = Paths.get("src/commonMain/composeResources/files/$fileName")
         val resourcePath = Paths.get("src/commonMain/composeResources/files/$fileName")
         if (!Files.exists(resourcePath)) {
             throw FileNotFoundException("File $fileName not found")
         }
 
-        return FileInputStream(resourcePath.toFile()).use { it.readBytes() }
+        return FileInputStream(resourcePath.toFile()).use { it.readBytes() }*/
     }
 
 
