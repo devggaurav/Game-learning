@@ -71,7 +71,8 @@ actual class AudioPlayer {
 
 
     private fun createAudioElement(filename: String): Audio {
-        val path = "src/commonMain/composeResources/files/$filename"
+     val path = "composeResources/clappygamelearning.composeapp.generated.resources/files/$filename" // for prod
+        //   val path = "src/commonMain/composeResources/files/$filename"   //For local host
         return Audio(path).apply {
             onerror = { _, _, _, _, _ ->
                 println("Error loading audio file: $path")
