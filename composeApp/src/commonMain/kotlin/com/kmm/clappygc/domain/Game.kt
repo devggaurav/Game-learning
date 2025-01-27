@@ -21,7 +21,7 @@ data class Game(
     val platform: Platform,
     val screenWidth: Int = 0,
     val screenHeight: Int = 0,
-    val gravity: Float = 0.7f,
+    val gravity: Float = if (platform == Platform.Android) 0.7f else 0.8f,
     val beeRadius: Float = 30f,
     val beeJumpImpulse: Float = -12f,
     val beeMaxVelocity: Float = if (platform == Platform.Android) 25f else 10f,
@@ -150,8 +150,8 @@ data class Game(
         beeVelocity = (beeVelocity + gravity).coerceIn(-beeMaxVelocity, beeMaxVelocity)
         bee = bee.copy(y = bee.y + beeVelocity)
 
-        if (beeVelocity > (beeVelocity / 1.1)){
-            if (!isFallingSoundPlayed){
+        if (beeVelocity > (beeVelocity / 1.1)) {
+            if (!isFallingSoundPlayed) {
                 audioPlayer.playFallingSound()
                 isFallingSoundPlayed = true
             }
